@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "435447816971",
+    "firebase_url": "https://locationmapper-c5ef7.firebaseio.com",
+    "project_id": "locationmapper-c5ef7",
+    "storage_bucket": "locationmapper-c5ef7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435447816971:android:4b317b93be052548",
+        "android_client_info": {
+          "package_name": "com.example.felix.locationmapper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435447816971-aq88jm2jain9q71b3oq1lbdbetnori8j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.felix.locationmapper",
+            "certificate_hash": "430EF2C4EF64AF5655601BD055BB2027A98FF313"
+          }
+        },
+        {
+          "client_id": "435447816971-1mh4rm92bcqrhfjneornn6hs59fd2lp8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-9Q5nq9Qur-ys8A_TwrzT7Ti8aYrM_6w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435447816971-1mh4rm92bcqrhfjneornn6hs59fd2lp8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
