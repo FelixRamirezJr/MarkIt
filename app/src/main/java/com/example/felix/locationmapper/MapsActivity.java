@@ -1,5 +1,6 @@
 package com.example.felix.locationmapper;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -60,13 +61,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int i = 0;
     String timeNow;
     String dateSelected;
+    final int PERMISSION_ALL = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         save = (Button) findViewById(R.id.search);
-        calenderButton = (Button) findViewById(R.id.calenderButton);
+
+        //calenderButton = (Button) findViewById(R.id.calenderButton);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -117,29 +121,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         marker_listeners();
+
+
         // Add a marker in Sydney and move the camera
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
 
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSION_ALL);
+
+        } else {
+            mMap.setMyLocationEnabled(true);
+        }
 
     }
 
     void set_calender_button(){
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d");
-        timeNow = format.format(calendar.getTime());
-        dateSelected = timeNow;
-        calenderButton.setText(timeNow);
+//        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d");
+//        timeNow = format.format(calendar.getTime());
+//        dateSelected = timeNow;
+//        calenderButton.setText(timeNow);
     }
 
     void marker_listeners(){
@@ -194,6 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+
     void load_saved_places(){
 
         mRootRef.orderByKey().addChildEventListener(new ChildEventListener() {
@@ -208,7 +213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if(currMarker != null) {
                             currMarker.remove();
                         }
-                        Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).alpha(BitmapDescriptorFactory.HUE_AZURE));
+                        Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).alpha(BitmapDescriptorFactory.HUE_ORANGE));
                         m.setTag(i);
                         markers.add(m);
                         //mMap.moveCamera(CameraUpdateFactory.newLatLng(newplace));
@@ -238,6 +243,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_ALL: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    mMap.setMyLocationEnabled(true);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
 
