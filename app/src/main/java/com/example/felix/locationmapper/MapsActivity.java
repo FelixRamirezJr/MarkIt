@@ -91,7 +91,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currLocation.setData(place.getName().toString(),place.getAddress().toString(),
                         place.getLatLng().latitude,place.getLatLng().longitude,dateSelected);
                 LatLng newplace = new LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
-                currMarker = mMap.addMarker(new MarkerOptions().position(newplace).title(place.getName().toString()));
+                //currMarker = mMap.addMarker(new MarkerOptions().position(newplace).title(place.getName().toString()));
+                currMarker = mMap.addMarker(new MarkerOptions().position(newplace).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).title(place.getName().toString()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(newplace));
             }
 
@@ -165,7 +166,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TryinTooSave","Ok");
                 if(currLocation == null){
                     Toast.makeText(getBaseContext(),"Choose a place first...",Toast.LENGTH_LONG).show();
                 }
@@ -213,7 +213,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if(currMarker != null) {
                             currMarker.remove();
                         }
-                        Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).alpha(BitmapDescriptorFactory.HUE_ORANGE));
+                        //Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).alpha(BitmapDescriptorFactory.HUE_ORANGE));
+                        Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                         m.setTag(i);
                         markers.add(m);
                         //mMap.moveCamera(CameraUpdateFactory.newLatLng(newplace));
