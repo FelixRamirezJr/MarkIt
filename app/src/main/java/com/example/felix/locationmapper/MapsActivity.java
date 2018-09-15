@@ -47,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.FileHandler;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -91,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currLocation.setData(place.getName().toString(),place.getAddress().toString(),
                         place.getLatLng().latitude,place.getLatLng().longitude,dateSelected);
                 LatLng newplace = new LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
-                //currMarker = mMap.addMarker(new MarkerOptions().position(newplace).title(place.getName().toString()));
+                currMarker = mMap.addMarker(new MarkerOptions().position(newplace).title(place.getName().toString()));
                 currMarker = mMap.addMarker(new MarkerOptions().position(newplace).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).title(place.getName().toString()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(newplace));
             }
@@ -103,7 +104,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        load_saved_places();
         save_place();
         set_calender_button();
     }
@@ -122,6 +122,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         marker_listeners();
+        load_saved_places();
 
 
         // Add a marker in Sydney and move the camera
@@ -171,9 +172,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else{
                     markerLocations.add(currLocation);
-                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                    DatabaseReference db = database.push();
-                    db.setValue(currLocation);
+                    FileMarkerHandler.addMarker(markerLocations, getApplicationContext());
+                    setMarkerOnMap(currLocation);
                     Toast.makeText(getBaseContext(),"Place saved!",Toast.LENGTH_LONG).show();
                     currLocation = null;
                 }
@@ -181,11 +181,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+
     void save_place(){
         mRootRef.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //MarkerLocation marker = new MarkerLocation();
-                //markerLocations.add(marker);
+                MarkerLocation marker = new MarkerLocation();
+                markerLocations.add(marker);
             }
 
             @Override
@@ -198,52 +199,75 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    void setMarkerOnMap(MarkerLocation ml){
+        LatLng lt = new LatLng(ml.lat, ml.lon);
+        Marker m = mMap.addMarker(new MarkerOptions().position(lt).title(ml.name).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        m.setTag(i);
+        markers.add(m);
+    }
+
 
     void load_saved_places(){
+//        Log.d("Load saved places now", "Cmon");
+//        LatLng newplace = new LatLng(40.699474800000004, -74.0395587);
+//        MarkerLocation m = new MarkerLocation();
+//        m.setDataWithLatLng("Ellis Island", "Ellis Island, United States",newplace, "something");
+//        markerLocations.add(m);
 
-        mRootRef.orderByKey().addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-                if(!dataSnapshot.getValue().toString().contains("null")) {
-                    MarkerLocation toAdd  = dataSnapshot.getValue(MarkerLocation.class);
-                    if(toAdd.address != null && toAdd.name != null) {
-                        Log.d("Marker", toAdd.name + " " + toAdd.lat + toAdd.address);
-                        markerLocations.add(toAdd);
-                        LatLng newplace = new LatLng(toAdd.lat, toAdd.lon);
-                        if(currMarker != null) {
-                            currMarker.remove();
-                        }
-                        //Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).alpha(BitmapDescriptorFactory.HUE_ORANGE));
-                        Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        m.setTag(i);
-                        markers.add(m);
-                        //mMap.moveCamera(CameraUpdateFactory.newLatLng(newplace));
-                        i++;
-                    }
-                }
+        markerLocations = FileMarkerHandler.readMarkers(getApplicationContext());
+        Log.d("markerLocationsCount", String.valueOf(markerLocations.size()));
+        for(MarkerLocation ml: markerLocations)
+        {
+            setMarkerOnMap(ml);
+        }
 
-            }
+        //Log.d("Reading", FileMarkerHandler.readMarkers(getApplicationContext()).toString());
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-            }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        mRootRef.orderByKey().addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+//                if(!dataSnapshot.getValue().toString().contains("null")) {
+//                    MarkerLocation toAdd  = dataSnapshot.getValue(MarkerLocation.class);
+//                    if(toAdd.address != null && toAdd.name != null) {
+//                        Log.d("Marker", toAdd.name + " " + toAdd.lat + toAdd.address);
+//                        markerLocations.add(toAdd);
+//                        LatLng newplace = new LatLng(toAdd.lat, toAdd.lon);
+//                        if(currMarker != null) {
+//                            currMarker.remove();
+//                        }
+//                        //Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).alpha(BitmapDescriptorFactory.HUE_ORANGE));
+//                        Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+//                        m.setTag(i);
+//                        markers.add(m);
+//                        //mMap.moveCamera(CameraUpdateFactory.newLatLng(newplace));
+//                        i++;
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     @Override

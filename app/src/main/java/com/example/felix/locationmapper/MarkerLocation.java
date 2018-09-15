@@ -11,14 +11,12 @@ import java.security.SecureRandom;
 
 public class MarkerLocation {
 
-    public LatLng latLng;
     public String address;
     public String name;
     public double lat;
     public double lon;
     public String id;
     public String date = "";
-    private SecureRandom random = new SecureRandom();
 
 
     MarkerLocation(){}
@@ -43,6 +41,7 @@ public class MarkerLocation {
     }
 
     void generateKey(){
+        SecureRandom random = new SecureRandom();
         id =  new BigInteger(130, random).toString(32);
     }
 
