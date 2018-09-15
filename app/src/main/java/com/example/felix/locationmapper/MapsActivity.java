@@ -57,7 +57,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<MarkerLocation> markerLocations = new ArrayList<>();
     ArrayList<Marker> markers = new ArrayList<>();
     Marker currMarker = null;
-    int i = 0;
     String dateSelected;
     final int PERMISSION_ALL = 1;
 
@@ -101,7 +100,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        set_calender_button();
     }
 
 
@@ -134,14 +132,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
         }
 
-    }
-
-    void set_calender_button(){
-//        Calendar calendar = Calendar.getInstance();
-//        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d");
-//        timeNow = format.format(calendar.getTime());
-//        dateSelected = timeNow;
-//        calenderButton.setText(timeNow);
     }
 
     void marker_listeners(){
