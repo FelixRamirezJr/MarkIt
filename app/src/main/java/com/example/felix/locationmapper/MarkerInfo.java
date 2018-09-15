@@ -35,16 +35,11 @@ import java.util.ArrayList;
  */
 
 public class MarkerInfo extends DialogFragment {
-    Button sendMessage;
-    EditText subject,message;
-    MultiAutoCompleteTextView recepients;
     MarkerLocation markerLocation;
     TextView name;
     TextView address;
     TextView date;
     Button delete;
-    int position;
-    GoogleMap map;
     Marker marker;
     DialogFragment d;
 
@@ -84,50 +79,12 @@ public class MarkerInfo extends DialogFragment {
 
         name.setText(markerLocation.name);
         address.setText(markerLocation.address);
-        date.setText("Coming soon");
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("click!","delete marker");
-                final DatabaseReference dbf = FirebaseDatabase.getInstance().getReference();
-                final String[] keyToDelete = new String[1];
-                dbf.orderByKey().addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        Log.d(String.valueOf(dataSnapshot.getValue(MarkerLocation.class).id),String.valueOf(markerLocation.id));
-                        if (dataSnapshot.getValue(MarkerLocation.class).id.equalsIgnoreCase(markerLocation.id)) {
-                            keyToDelete[0] = dataSnapshot.getKey().toString();
-                            Log.d("Key: ", keyToDelete[0]);
-                            Log.d(markerLocation.name, "Is about to be deleted");
-                            DatabaseReference delete = FirebaseDatabase.getInstance().getReference().child(keyToDelete[0]);
-                            delete.removeValue();
-                            // Removed...
-                            marker.remove();
-                            dbf.removeEventListener(this);
-                            d.dismiss();
-                        }
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                ((MapsActivity)getActivity()).remove_marker_location(markerLocation);
+                marker.remove();
+                d.dismiss();
                 // End of on action
             }
         });

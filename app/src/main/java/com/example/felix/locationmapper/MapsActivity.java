@@ -53,14 +53,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private Button save;
-    private Button calenderButton;
     private MarkerLocation currLocation = null;
-    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     ArrayList<MarkerLocation> markerLocations = new ArrayList<>();
     ArrayList<Marker> markers = new ArrayList<>();
     Marker currMarker = null;
     int i = 0;
-    String timeNow;
     String dateSelected;
     final int PERMISSION_ALL = 1;
 
@@ -68,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        save = (Button) findViewById(R.id.search);
         save = (Button) findViewById(R.id.search);
 
         //calenderButton = (Button) findViewById(R.id.calenderButton);
@@ -87,7 +85,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                Log.d("OnSelect","True");
                 currLocation = new MarkerLocation();
                 currLocation.setData(place.getName().toString(),place.getAddress().toString(),
                         place.getLatLng().latitude,place.getLatLng().longitude,dateSelected);
@@ -104,7 +101,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        save_place();
         set_calender_button();
     }
 
@@ -153,13 +149,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 final MarkerInfo popup = new MarkerInfo();
-                MarkerLocation markerInfoToOpen = markerLocations.get(Integer.parseInt(marker.getTag().toString()));
+                MarkerLocation markerInfoToOpen = (MarkerLocation) marker.getTag();
                 popup.markerLocation = markerInfoToOpen;
                 popup.marker = marker;
                 popup.show(getFragmentManager(), "fragment_edit_name");
                 return false;
             }
         });
+    }
+
+    void remove_marker_location(MarkerLocation location)
+    {
+       markerLocations.remove(location);
+       FileMarkerHandler.setMarkers(markerLocations, getApplicationContext());
     }
 
     void setSearchAction()
@@ -172,7 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else{
                     markerLocations.add(currLocation);
-                    FileMarkerHandler.addMarker(markerLocations, getApplicationContext());
+                    FileMarkerHandler.setMarkers(markerLocations, getApplicationContext());
                     setMarkerOnMap(currLocation);
                     Toast.makeText(getBaseContext(),"Place saved!",Toast.LENGTH_LONG).show();
                     currLocation = null;
@@ -182,92 +184,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    void save_place(){
-        mRootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                MarkerLocation marker = new MarkerLocation();
-                markerLocations.add(marker);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-            public void onCancelled(FirebaseDatabase firebaseError) {
-            }
-        });
-    }
-
     void setMarkerOnMap(MarkerLocation ml){
         LatLng lt = new LatLng(ml.lat, ml.lon);
         Marker m = mMap.addMarker(new MarkerOptions().position(lt).title(ml.name).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        m.setTag(i);
+        m.setTag(ml);
         markers.add(m);
     }
 
 
     void load_saved_places(){
-//        Log.d("Load saved places now", "Cmon");
-//        LatLng newplace = new LatLng(40.699474800000004, -74.0395587);
-//        MarkerLocation m = new MarkerLocation();
-//        m.setDataWithLatLng("Ellis Island", "Ellis Island, United States",newplace, "something");
-//        markerLocations.add(m);
-
         markerLocations = FileMarkerHandler.readMarkers(getApplicationContext());
         Log.d("markerLocationsCount", String.valueOf(markerLocations.size()));
         for(MarkerLocation ml: markerLocations)
         {
             setMarkerOnMap(ml);
         }
-
-        //Log.d("Reading", FileMarkerHandler.readMarkers(getApplicationContext()).toString());
-
-
-
-//        mRootRef.orderByKey().addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-//                if(!dataSnapshot.getValue().toString().contains("null")) {
-//                    MarkerLocation toAdd  = dataSnapshot.getValue(MarkerLocation.class);
-//                    if(toAdd.address != null && toAdd.name != null) {
-//                        Log.d("Marker", toAdd.name + " " + toAdd.lat + toAdd.address);
-//                        markerLocations.add(toAdd);
-//                        LatLng newplace = new LatLng(toAdd.lat, toAdd.lon);
-//                        if(currMarker != null) {
-//                            currMarker.remove();
-//                        }
-//                        //Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).alpha(BitmapDescriptorFactory.HUE_ORANGE));
-//                        Marker m = mMap.addMarker(new MarkerOptions().position(newplace).title(toAdd.name).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//                        m.setTag(i);
-//                        markers.add(m);
-//                        //mMap.moveCamera(CameraUpdateFactory.newLatLng(newplace));
-//                        i++;
-//                    }
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
     @Override

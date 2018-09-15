@@ -23,7 +23,7 @@ public class FileMarkerHandler {
     static String fileName = "markers";
     FileOutputStream outputStream;
 
-    static public void addMarker(ArrayList<MarkerLocation> markerLocationList, Context context)
+    static public void setMarkers(ArrayList<MarkerLocation> markerLocationList, Context context)
     {
         // Destroy folder and recreate it if it exists
         File folder = new File(context.getFilesDir(), folderName);
@@ -54,15 +54,7 @@ public class FileMarkerHandler {
 
     static public ArrayList<MarkerLocation> readMarkers(Context context)
     {
-//        File file = new File(context.getFilesDir(), folderName + "/" + fileName);
-//        if(folder.exists()) {
-//            Log.d("readMarkers", "Folder Exists");
-//            for(File file : folder.listFiles()){
-//                Log.d("readMarkers",file.getName());
-//            }
-//        }
         ArrayList<MarkerLocation> locations;
-        //String filePath = context.getFilesDir() + folderName + "/" + fileName;
         File file = new File(context.getFilesDir(), folderName + "/" + fileName);
         MarkerLocation [] data = new MarkerLocation[0];
 
