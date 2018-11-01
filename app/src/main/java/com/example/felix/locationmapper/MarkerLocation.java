@@ -21,15 +21,6 @@ public class MarkerLocation {
 
     MarkerLocation(){}
 
-    void setDataWithLatLng(String name, String address, LatLng latLng, String date)
-    {
-        this.name = name;
-        this.address = address;
-        this.lat = latLng.latitude;
-        this.lon = latLng.longitude;
-        this.date  = date;
-        generateKey();
-    }
 
     void setData(String name, String address, double lat, double lon, String date){
         this.name = name;

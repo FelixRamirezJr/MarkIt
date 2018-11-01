@@ -43,6 +43,11 @@ public class MarkerInfo extends DialogFragment {
     Marker marker;
     DialogFragment d;
 
+    MarkerInfo(MarkerLocation ml, Marker m){
+     this.markerLocation = ml;
+     this.marker = m;
+    }
+
 
 
     @Override
@@ -70,15 +75,16 @@ public class MarkerInfo extends DialogFragment {
         Log.d("Height", Integer.toString(height));
         getDialog().getWindow().setLayout(width - 100, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-
-
         name = (TextView) rootView.findViewById(R.id.name);
         address = (TextView) rootView.findViewById(R.id.address);
         date = (TextView) rootView.findViewById(R.id.date);
         delete = (Button) rootView.findViewById(R.id.delete);
 
-        name.setText(markerLocation.name);
-        address.setText(markerLocation.address);
+        if(markerLocation != null) {
+            name.setText(markerLocation.name);
+            address.setText(markerLocation.address);
+        }
+
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

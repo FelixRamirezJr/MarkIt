@@ -21,7 +21,6 @@ import java.util.Arrays;
 public class FileMarkerHandler {
     static String folderName = "markit";
     static String fileName = "markers";
-    FileOutputStream outputStream;
 
     static public void setMarkers(ArrayList<MarkerLocation> markerLocationList, Context context)
     {
@@ -48,7 +47,7 @@ public class FileMarkerHandler {
             e.printStackTrace();
 
         }
-        Log.d("addMarker", "Done!");
+        //Log.d("addMarker", "Done!");
 
     }
 
@@ -59,7 +58,7 @@ public class FileMarkerHandler {
         MarkerLocation [] data = new MarkerLocation[0];
 
         if(file.exists()){
-            Log.d("readMarkers", "File exists going to read...");
+            //Log.d("readMarkers", "File exists going to read...");
             try {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
@@ -67,7 +66,7 @@ public class FileMarkerHandler {
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
-                    Log.d("readMarker:append_line",line);
+                    //Log.d("readMarker:append_line",line);
                     sb.append(line);
                 }
                 data = new Gson().fromJson(sb.toString(), MarkerLocation[].class);
@@ -79,7 +78,7 @@ public class FileMarkerHandler {
             // Now create locations based on the json data retrieved
             locations = new ArrayList<>(Arrays.asList(data));
         } else {
-            Log.d("readMarkers","File Does NOT exist");
+            //Log.d("readMarkers","File Does NOT exist");
             locations = new ArrayList<>();
         }
         return locations;

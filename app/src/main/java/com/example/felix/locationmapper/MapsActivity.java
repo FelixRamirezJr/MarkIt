@@ -65,7 +65,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         save = (Button) findViewById(R.id.search);
-        save = (Button) findViewById(R.id.search);
 
         //calenderButton = (Button) findViewById(R.id.calenderButton);
 
@@ -88,7 +87,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currLocation.setData(place.getName().toString(),place.getAddress().toString(),
                         place.getLatLng().latitude,place.getLatLng().longitude,dateSelected);
                 LatLng newplace = new LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
-                currMarker = mMap.addMarker(new MarkerOptions().position(newplace).title(place.getName().toString()));
                 currMarker = mMap.addMarker(new MarkerOptions().position(newplace).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).title(place.getName().toString()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(newplace));
             }
@@ -138,11 +136,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                final MarkerInfo popup = new MarkerInfo();
                 MarkerLocation markerInfoToOpen = (MarkerLocation) marker.getTag();
-                popup.markerLocation = markerInfoToOpen;
-                popup.marker = marker;
-                popup.show(getFragmentManager(), "fragment_edit_name");
+                if(markerInfoToOpen == null){
+                    Log.d("markerOpenError", "Couldn't open marker popup");
+                    return false;
+                } else {
+                    final MarkerInfo popup = new MarkerInfo(markerInfoToOpen, marker);
+                    popup.show(getFragmentManager(), "fragment_edit_name");
+                }
                 return false;
             }
         });
@@ -165,9 +166,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 else{
                     markerLocations.add(currLocation);
                     FileMarkerHandler.setMarkers(markerLocations, getApplicationContext());
-                    setMarkerOnMap(currLocation);
                     Toast.makeText(getBaseContext(),"Place saved!",Toast.LENGTH_LONG).show();
+                    // Refresh Markers
                     currLocation = null;
+                    currMarker = null;
+                    mMap.clear();
+                    markers.clear();
+                    load_saved_places();
                 }
             }
         });
@@ -184,7 +189,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     void load_saved_places(){
         markerLocations = FileMarkerHandler.readMarkers(getApplicationContext());
-        Log.d("markerLocationsCount", String.valueOf(markerLocations.size()));
         for(MarkerLocation ml: markerLocations)
         {
             setMarkerOnMap(ml);
