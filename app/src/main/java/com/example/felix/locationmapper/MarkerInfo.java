@@ -43,6 +43,8 @@ public class MarkerInfo extends DialogFragment {
     Marker marker;
     DialogFragment d;
 
+    public MarkerInfo() {}
+
     MarkerInfo(MarkerLocation ml, Marker m){
      this.markerLocation = ml;
      this.marker = m;
