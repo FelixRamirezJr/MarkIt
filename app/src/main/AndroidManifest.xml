@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="0"
     android:versionName="beta"
-    package="com.example.felix.locationmapper">
+    package="com.projects.felix.locationmapper">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use

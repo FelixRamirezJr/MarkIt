@@ -1,6 +1,4 @@
-package com.example.felix.locationmapper;
-
-import com.google.android.gms.maps.model.LatLng;
+package com.projects.felix.locationmapper;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

@@ -1,4 +1,4 @@
-package com.example.felix.locationmapper;
+package com.projects.felix.locationmapper;
 
 import android.content.Context;
 import android.net.Uri;

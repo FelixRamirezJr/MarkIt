@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:435447816971:android:4b317b93be052548",
         "android_client_info": {
-          "package_name": "com.example.felix.locationmapper"
+          "package_name": "com.projects.felix.locationmapper"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "435447816971-aq88jm2jain9q71b3oq1lbdbetnori8j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.felix.locationmapper",
+            "package_name": "com.projects.felix.locationmapper",
             "certificate_hash": "430EF2C4EF64AF5655601BD055BB2027A98FF313"
           }
         },
